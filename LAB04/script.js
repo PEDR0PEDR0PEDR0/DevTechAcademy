@@ -54,6 +54,8 @@ const form = document.getElementById('funcionario-form');
 const tabelaBody = document.querySelector('#tabela-funcionarios tbody');
 const funcionarioIdInput = document.getElementById('funcionario-id');
 const submitButton = document.getElementById('submit-button');
+const cancelarEdicaoButton = document.getElementById('cancelar-edicao'); // Adicionado
+
 
 // Função para renderizar a tabela (Listagem)
 const renderizarTabela = () => {
@@ -75,10 +77,10 @@ const renderizarTabela = () => {
         // Célula de Ações (Botões)
         const acoesCell = linha.insertCell();
         
-        // Botão Editar (A ser implementado totalmente no próximo exercício)
+        // Botão Editar
         const btnEditar = document.createElement('button');
         btnEditar.textContent = 'Editar';
-        btnEditar.addEventListener('click', () => console.log(`Início da edição do ID ${funcionario.id}`));
+        btnEditar.addEventListener('click', () => preencherFormularioParaEdicao(funcionario.id));
         acoesCell.appendChild(btnEditar);
 
         // Botão Excluir
@@ -96,9 +98,10 @@ const cadastrarFuncionario = (funcionarioInstancia) => {
     console.log('Funcionário cadastrado:', funcionarioInstancia.toString());
 };
 
-// Função para excluir funcionário (Parcialmente implementado)
+// Função para excluir funcionário
 const excluirFuncionario = (id) => {
     if (confirm(`Tem certeza que deseja excluir o funcionário de ID ${id}?`)) {
+        // FILTER: Cria um novo array excluindo o item
         funcionarios = funcionarios.filter(f => f.id !== id);
         renderizarTabela(); // Atualiza a tabela
         alert(`Funcionário de ID ${id} excluído.`); 
@@ -106,31 +109,94 @@ const excluirFuncionario = (id) => {
     }
 };
 
+/**
+ * Preenche o formulário com dados do funcionário para edição.
+ */
+const preencherFormularioParaEdicao = (id) => {
+    const funcionario = funcionarios.find(f => f.id === id);
+    
+    if (funcionario) {
+        // Preencher o formulário com os dados usando os GETTERS (embora direto seja similar)
+        document.getElementById('nome').value = funcionario.nome;
+        document.getElementById('idade').value = funcionario.idade;
+        document.getElementById('cargo').value = funcionario.cargo;
+        document.getElementById('salario').value = funcionario.salario;
+        
+        // Armazenar o ID no campo hidden para indicar modo edição
+        funcionarioIdInput.value = funcionario.id; 
+
+        // Mudar o texto do botão e exibir o botão de cancelamento
+        submitButton.textContent = 'Salvar Alterações';
+        cancelarEdicaoButton.style.display = 'inline-block';
+        
+        console.log(`Modo Edição ativado para o ID ${funcionario.id}`);
+        window.scrollTo(0, 0); 
+    }
+};
+
+/**
+ * Atualiza os dados de um funcionário existente.
+ */
+const atualizarFuncionario = (id, novosDadosInstancia) => {
+    const index = funcionarios.findIndex(f => f.id === id);
+
+    if (index !== -1) {
+        const funcionarioAntigo = funcionarios[index];
+        
+        // **USANDO OS SETTERS DA CLASSE PARA ATUALIZAR**
+        funcionarioAntigo.nome = novosDadosInstancia.nome;
+        funcionarioAntigo.idade = novosDadosInstancia.idade;
+        funcionarioAntigo.cargo = novosDadosInstancia.cargo;
+        funcionarioAntigo.salario = novosDadosInstancia.salario;
+        
+        console.log(`Funcionário de ID ${id} atualizado.`, funcionarioAntigo.toString());
+    }
+};
+
+/**
+ * Reseta o formulário para o modo de cadastro.
+ */
+const reiniciarModoCadastro = () => {
+    funcionarioIdInput.value = ''; 
+    submitButton.textContent = 'Cadastrar Funcionário';
+    cancelarEdicaoButton.style.display = 'none';
+    form.reset();
+};
+
 
 // ----------------------------------------------------------------
 // ESCUTADOR DE EVENTOS (ADD EVENT LISTENER)
 // ----------------------------------------------------------------
 
-// Evento principal do formulário (Cadastro)
+// Evento principal do formulário (Cadastro/Edição)
 form.addEventListener('submit', (evento) => { 
     evento.preventDefault(); 
 
-    // 1. Coletar os valores do formulário
     const nome = document.getElementById('nome').value;
     const idade = document.getElementById('idade').value;
     const cargo = document.getElementById('cargo').value;
     const salario = document.getElementById('salario').value;
+    const idEdicao = funcionarioIdInput.value; 
 
-    // 2. Criar uma nova instância da classe Funcionario
-    const novoFuncionario = new Funcionario(nome, idade, cargo, salario);
+    // Nova instância usada para encapsular os dados do formulário
+    const dadosFormulario = new Funcionario(nome, idade, cargo, salario);
+
+    if (idEdicao) {
+        // MODO EDIÇÃO
+        atualizarFuncionario(parseInt(idEdicao), dadosFormulario);
+        alert(`Funcionário ID ${idEdicao} atualizado com sucesso!`);
+    } else {
+        // MODO CADASTRO
+        cadastrarFuncionario(dadosFormulario);
+        alert(`Funcionário ${nome} cadastrado com sucesso!`);
+    }
     
-    // 3. Cadastrar (por enquanto, apenas cadastro)
-    cadastrarFuncionario(novoFuncionario);
-    
-    // 4. Atualizar o DOM
     renderizarTabela(); 
-    form.reset(); 
+    reiniciarModoCadastro(); 
 });
+
+// Evento para o botão Cancelar Edição
+cancelarEdicaoButton.addEventListener('click', reiniciarModoCadastro);
 
 
 // ----------------------------------------------------------------
