@@ -1,39 +1,25 @@
 /**
- * CLASSE FUNCIONARIO
- * Define a estrutura de dados e métodos para cada funcionário.
+ * CLASSE FUNCIONARIO (MANTIDA)
  */
 class Funcionario {
     constructor(nome, idade, cargo, salario) {
-        // Atributos privados (usando _ prefixo como convenção)
         this._nome = nome;
         this._idade = parseInt(idade);
         this._cargo = cargo;
         this._salario = parseFloat(salario);
     }
 
-    // =========================================================
-    // Métodos de Acesso (GETTERS e SETTERS)
-    // =========================================================
-
+    // Getters e Setters (MANTIDOS)
     get nome() { return this._nome; }
     set nome(novoNome) { this._nome = novoNome; }
-
     get idade() { return this._idade; }
     set idade(novaIdade) { this._idade = parseInt(novaIdade); }
-
     get cargo() { return this._cargo; }
     set cargo(novoCargo) { this._cargo = novoCargo; }
-
     get salario() { return this._salario; }
     set salario(novoSalario) { this._salario = parseFloat(novoSalario); }
 
-    // =========================================================
-    // Métodos de Negócio
-    // =========================================================
-
-    /**
-     * Retorna os dados do funcionário formatados.
-     */
+    // Método toString usando Arrow Function (MANTIDO)
     toString = () => {
         const idDisplay = this.id ? `[ID: ${this.id}]` : `[Novo]`;
         const salarioFormatado = this._salario.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
@@ -43,31 +29,31 @@ class Funcionario {
 
 
 // ----------------------------------------------------------------
-// LÓGICA DO SISTEMA CRUD
+// LÓGICA DO SISTEMA CRUD (FUNÇÕES REESCRITAS COMO ARROW FUNCTIONS)
 // ----------------------------------------------------------------
 
-let funcionarios = []; // Array que armazena instâncias de Funcionario
+let funcionarios = [];
 let proximoId = 1;
 
-// Seleção de elementos do DOM
+// Seleção de elementos do DOM (MANTIDA)
 const form = document.getElementById('funcionario-form');
 const tabelaBody = document.querySelector('#tabela-funcionarios tbody');
 const funcionarioIdInput = document.getElementById('funcionario-id');
 const submitButton = document.getElementById('submit-button');
-const cancelarEdicaoButton = document.getElementById('cancelar-edicao'); // Adicionado
+const cancelarEdicaoButton = document.getElementById('cancelar-edicao');
 
 
-// Função para renderizar a tabela (Listagem)
-const renderizarTabela = () => {
+/**
+ * Função para renderizar a tabela (Listagem).
+ */
+const renderizarTabela = () => { // Função reescrita como Arrow Function
     tabelaBody.innerHTML = '';
 
-    funcionarios.forEach(funcionario => {
+    funcionarios.forEach(funcionario => { // forEach usando Arrow Function
         const linha = tabelaBody.insertRow();
         
-        // Formatação do Salário
         const salarioFormatado = funcionario.salario.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
 
-        // Células com dados
         linha.insertCell().textContent = funcionario.id;
         linha.insertCell().textContent = funcionario.nome;
         linha.insertCell().textContent = funcionario.idade;
@@ -77,55 +63,62 @@ const renderizarTabela = () => {
         // Célula de Ações (Botões)
         const acoesCell = linha.insertCell();
         
-        // Botão Editar
+        // Botão Editar - addEventListener usando Função Anônima (Arrow Function)
         const btnEditar = document.createElement('button');
         btnEditar.textContent = 'Editar';
-        btnEditar.addEventListener('click', () => preencherFormularioParaEdicao(funcionario.id));
+        btnEditar.addEventListener('click', () => { // Funções anônimas
+             preencherFormularioParaEdicao(funcionario.id)
+        });
         acoesCell.appendChild(btnEditar);
 
-        // Botão Excluir
+        // Botão Excluir - addEventListener usando Função Anônima (Arrow Function)
         const btnExcluir = document.createElement('button');
         btnExcluir.textContent = 'Excluir';
-        btnExcluir.addEventListener('click', () => excluirFuncionario(funcionario.id));
+        btnExcluir.addEventListener('click', () => { // Funções anônimas
+            excluirFuncionario(funcionario.id)
+        });
         acoesCell.appendChild(btnExcluir);
     });
 };
 
-// Função para cadastrar funcionário
-const cadastrarFuncionario = (funcionarioInstancia) => {
+/**
+ * Função para cadastrar funcionário.
+ */
+const cadastrarFuncionario = (funcionarioInstancia) => { // Reescrevendo como Arrow Function
     funcionarioInstancia.id = proximoId++; 
     funcionarios.push(funcionarioInstancia);
     console.log('Funcionário cadastrado:', funcionarioInstancia.toString());
 };
 
-// Função para excluir funcionário
-const excluirFuncionario = (id) => {
+/**
+ * Função para excluir funcionário.
+ */
+const excluirFuncionario = (id) => { // Reescrevendo como Arrow Function
     if (confirm(`Tem certeza que deseja excluir o funcionário de ID ${id}?`)) {
-        // FILTER: Cria um novo array excluindo o item
+        // FILTER: Usando Função Lambda (Arrow Function) para manipulação de array
         funcionarios = funcionarios.filter(f => f.id !== id);
-        renderizarTabela(); // Atualiza a tabela
+        
+        renderizarTabela(); 
         alert(`Funcionário de ID ${id} excluído.`); 
         console.log(`Funcionário de ID ${id} excluído.`);
     }
 };
 
 /**
- * Preenche o formulário com dados do funcionário para edição.
+ * Preenche o formulário para edição.
  */
-const preencherFormularioParaEdicao = (id) => {
-    const funcionario = funcionarios.find(f => f.id === id);
+const preencherFormularioParaEdicao = (id) => { // Reescrevendo como Arrow Function
+    // FIND: Usando Função Lambda (Arrow Function) para manipulação de array
+    const funcionario = funcionarios.find(f => f.id === id); 
     
     if (funcionario) {
-        // Preencher o formulário com os dados usando os GETTERS (embora direto seja similar)
         document.getElementById('nome').value = funcionario.nome;
         document.getElementById('idade').value = funcionario.idade;
         document.getElementById('cargo').value = funcionario.cargo;
         document.getElementById('salario').value = funcionario.salario;
         
-        // Armazenar o ID no campo hidden para indicar modo edição
         funcionarioIdInput.value = funcionario.id; 
 
-        // Mudar o texto do botão e exibir o botão de cancelamento
         submitButton.textContent = 'Salvar Alterações';
         cancelarEdicaoButton.style.display = 'inline-block';
         
@@ -137,13 +130,14 @@ const preencherFormularioParaEdicao = (id) => {
 /**
  * Atualiza os dados de um funcionário existente.
  */
-const atualizarFuncionario = (id, novosDadosInstancia) => {
-    const index = funcionarios.findIndex(f => f.id === id);
+const atualizarFuncionario = (id, novosDadosInstancia) => { // Reescrevendo como Arrow Function
+    // FINDINDEX: Usando Função Lambda (Arrow Function) para manipulação de array
+    const index = funcionarios.findIndex(f => f.id === id); 
 
     if (index !== -1) {
         const funcionarioAntigo = funcionarios[index];
         
-        // **USANDO OS SETTERS DA CLASSE PARA ATUALIZAR**
+        // Uso de Setters (MANTIDO)
         funcionarioAntigo.nome = novosDadosInstancia.nome;
         funcionarioAntigo.idade = novosDadosInstancia.idade;
         funcionarioAntigo.cargo = novosDadosInstancia.cargo;
@@ -156,7 +150,7 @@ const atualizarFuncionario = (id, novosDadosInstancia) => {
 /**
  * Reseta o formulário para o modo de cadastro.
  */
-const reiniciarModoCadastro = () => {
+const reiniciarModoCadastro = () => { // Reescrevendo como Arrow Function
     funcionarioIdInput.value = ''; 
     submitButton.textContent = 'Cadastrar Funcionário';
     cancelarEdicaoButton.style.display = 'none';
@@ -165,10 +159,11 @@ const reiniciarModoCadastro = () => {
 
 
 // ----------------------------------------------------------------
-// ESCUTADOR DE EVENTOS (ADD EVENT LISTENER)
+// ESCUTADORES DE EVENTOS (ADD EVENT LISTENER)
 // ----------------------------------------------------------------
 
 // Evento principal do formulário (Cadastro/Edição)
+// addEventListener usando Função Anônima (Arrow Function)
 form.addEventListener('submit', (evento) => { 
     evento.preventDefault(); 
 
@@ -178,15 +173,12 @@ form.addEventListener('submit', (evento) => {
     const salario = document.getElementById('salario').value;
     const idEdicao = funcionarioIdInput.value; 
 
-    // Nova instância usada para encapsular os dados do formulário
     const dadosFormulario = new Funcionario(nome, idade, cargo, salario);
 
     if (idEdicao) {
-        // MODO EDIÇÃO
         atualizarFuncionario(parseInt(idEdicao), dadosFormulario);
         alert(`Funcionário ID ${idEdicao} atualizado com sucesso!`);
     } else {
-        // MODO CADASTRO
         cadastrarFuncionario(dadosFormulario);
         alert(`Funcionário ${nome} cadastrado com sucesso!`);
     }
@@ -196,7 +188,11 @@ form.addEventListener('submit', (evento) => {
 });
 
 // Evento para o botão Cancelar Edição
-cancelarEdicaoButton.addEventListener('click', reiniciarModoCadastro);
+// addEventListener usando Função Anônima (Arrow Function)
+cancelarEdicaoButton.addEventListener('click', () => { 
+    reiniciarModoCadastro();
+    console.log("Edição cancelada.");
+});
 
 
 // ----------------------------------------------------------------
