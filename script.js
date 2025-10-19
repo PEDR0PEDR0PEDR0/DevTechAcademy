@@ -1,4 +1,40 @@
-// Array para armazenar os alunos (simulação de banco de dados em memória)
+/**
+ * CLASSE ALUNO
+ * Representa um registro de aluno com seus dados e métodos de negócio.
+ */
+class Aluno {
+    constructor(nome, idade, curso, notaFinal) {
+        this.nome = nome;
+        this.idade = parseInt(idade); // Garante que é um número
+        this.curso = curso;
+        this.notaFinal = parseFloat(notaFinal); // Garante que é um número decimal
+    }
+
+    /**
+     * Método: Verifica a aprovação (notaFinal >= 7.0)
+     * @returns {boolean}
+     */
+    isAprovado() {
+        return this.notaFinal >= 7.0;
+    }
+
+    /**
+     * Método: Retorna os dados do aluno formatados
+     * @returns {string}
+     */
+    toString() {
+        const status = this.isAprovado() ? "Aprovado" : "Reprovado";
+        // O ID só existe se for definido pelo sistema CRUD
+        const idDisplay = this.id ? `[ID: ${this.id}]` : `[Novo Aluno]`;
+        return `${idDisplay} ${this.nome} (${this.idade} anos) - Curso: ${this.curso}, Nota: ${this.notaFinal} (${status})`;
+    }
+}
+
+// ----------------------------------------------------------------
+// LÓGICA DO SISTEMA CRUD
+// ----------------------------------------------------------------
+
+// Array para armazenar os alunos (instâncias da classe Aluno)
 let alunos = [];
 let proximoId = 1;
 
@@ -11,10 +47,8 @@ const cancelarEdicaoButton = document.getElementById('cancelar-edicao');
 
 // Função para renderizar a tabela
 function renderizarTabela() {
-    // Limpa o corpo da tabela
     tabelaBody.innerHTML = '';
 
-    // Itera sobre o array de alunos e cria as linhas da tabela
     alunos.forEach(aluno => {
         const linha = tabelaBody.insertRow();
         
@@ -23,7 +57,11 @@ function renderizarTabela() {
         linha.insertCell().textContent = aluno.nome;
         linha.insertCell().textContent = aluno.idade;
         linha.insertCell().textContent = aluno.curso;
-        linha.insertCell().textContent = aluno.notaFinal;
+        
+        // Célula da Nota Final (usando o método isAprovado para estilizar)
+        const notaCell = linha.insertCell();
+        notaCell.textContent = aluno.notaFinal;
+        notaCell.classList.add(aluno.isAprovado() ? 'aprovado' : 'reprovado');
 
         // Célula de Ações (Botões)
         const acoesCell = linha.insertCell();
@@ -40,46 +78,47 @@ function renderizarTabela() {
         btnExcluir.onclick = () => excluirAluno(aluno.id);
         acoesCell.appendChild(btnExcluir);
     });
+
+    console.log("-----------------------------------------");
+    console.log("Status atual do Array de Alunos (usando toString()):");
+    alunos.forEach(aluno => console.log(aluno.toString()));
 }
 
 // ------------------------------------
-// Ações de CRUD
+// Evento principal: Cadastro/Atualização
 // ------------------------------------
-
-// Lógica de Cadastro/Atualização
 form.addEventListener('submit', (evento) => {
-    evento.preventDefault(); // Evita o recarregamento da página
+    evento.preventDefault(); 
 
+    // 1. Coletar os valores do formulário
     const nome = document.getElementById('nome').value;
-    const idade = parseInt(document.getElementById('idade').value);
+    const idade = document.getElementById('idade').value;
     const curso = document.getElementById('curso').value;
-    const notaFinal = parseFloat(document.getElementById('notaFinal').value);
+    const notaFinal = document.getElementById('notaFinal').value;
     const idEdicao = alunoIdInput.value;
 
-    const novoAluno = { nome, idade, curso, notaFinal };
+    // 2. Criar uma nova instância da classe Aluno
+    const novoAlunoInstancia = new Aluno(nome, idade, curso, notaFinal);
 
     if (idEdicao) {
         // Modo Edição
-        atualizarAluno(parseInt(idEdicao), novoAluno);
+        atualizarAluno(parseInt(idEdicao), novoAlunoInstancia);
     } else {
         // Modo Cadastro
-        cadastrarAluno(novoAluno);
+        cadastrarAluno(novoAlunoInstancia);
     }
     
-    form.reset(); // Limpa o formulário
-    renderizarTabela(); // Atualiza a tabela
-    reiniciarModoCadastro(); // Volta ao modo de cadastro
+    form.reset(); 
+    renderizarTabela(); 
+    reiniciarModoCadastro(); 
 });
 
 // 1. Cadastrar Aluno
-function cadastrarAluno(dadosAluno) {
-    const aluno = {
-        id: proximoId++,
-        ...dadosAluno
-    };
-    alunos.push(aluno);
-    console.log('Array de alunos após cadastro:', alunos);
-    console.log('Aluno cadastrado:', aluno);
+function cadastrarAluno(alunoInstancia) {
+    // Adicionamos o ID na instância antes de inserir no array
+    alunoInstancia.id = proximoId++; 
+    alunos.push(alunoInstancia);
+    console.log('Aluno cadastrado:', alunoInstancia.toString());
 }
 
 // 2. Excluir Aluno
@@ -104,17 +143,18 @@ function preencherFormularioParaEdicao(id) {
         submitButton.textContent = 'Salvar Edição';
         cancelarEdicaoButton.style.display = 'inline-block';
         
-        // Leva o usuário de volta ao formulário
         window.scrollTo(0, 0);
     }
 }
 
 // 4. Atualizar Aluno (chamado pelo evento 'submit' em modo edição)
-function atualizarAluno(id, novosDados) {
+function atualizarAluno(id, novosDadosInstancia) {
     const index = alunos.findIndex(aluno => aluno.id === id);
     if (index !== -1) {
-        alunos[index] = { id, ...novosDados };
-        console.log(`Aluno de ID ${id} atualizado.`, alunos[index]);
+        // Mantemos o ID e substituímos a instância antiga pela nova
+        novosDadosInstancia.id = id; 
+        alunos[index] = novosDadosInstancia;
+        console.log(`Aluno de ID ${id} atualizado.`, novosDadosInstancia.toString());
     }
 }
 
