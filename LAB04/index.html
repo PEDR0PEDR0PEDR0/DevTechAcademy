@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gestão de Funcionários - Startup Tech</title>
+    <title>Gestão de Funcionários - Startup Tech (Ex. 4)</title>
     <style>
         body { font-family: Arial, sans-serif; margin: 20px; }
         form div { margin-bottom: 10px; }
@@ -14,6 +14,15 @@
         table { width: 100%; border-collapse: collapse; margin-top: 20px; }
         th, td { border: 1px solid #ccc; padding: 10px; text-align: left; }
         th { background-color: #f0f0f0; }
+        
+        /* Estilo para a seção de relatórios */
+        #relatorios { 
+            border: 1px solid #ccc; 
+            padding: 15px; 
+            margin-bottom: 20px; 
+            background-color: #f9f9f9;
+        }
+        #relatorios h4 { margin-top: 10px; border-bottom: 1px solid #eee; padding-bottom: 5px; }
     </style>
 </head>
 <body>
@@ -45,6 +54,29 @@
         <button type="submit" id="submit-button">Cadastrar Funcionário</button>
         <button type="button" id="cancelar-edicao" style="display:none;">Cancelar Edição</button>
     </form>
+
+    <hr>
+
+    <h2>Relatórios de Recursos Humanos</h2>
+    <div id="relatorios">
+        
+        <h3>Estatísticas</h3>
+        <p>Média Salarial: <span id="media-salarial">N/A</span></p>
+        
+        <h3>Filtros e Listagens</h3>
+        <button id="btn-salario-alto">Listar Salários > R$ 5000</button>
+        <button id="btn-reset-filtro">Listar Todos (Resetar)</button>
+
+        <div style="margin-top: 15px;">
+            <h4>Cargos Únicos na Empresa:</h4>
+            <p id="cargos-unicos">N/A</p>
+        </div>
+
+        <div style="margin-top: 15px;">
+            <h4>Nomes dos Funcionários (Maiúsculo):</h4>
+            <p id="nomes-maiusculo">N/A</p>
+        </div>
+    </div>
 
     <hr>
 
