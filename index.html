@@ -41,6 +41,36 @@
     </form>
 
     <hr>
+    <hr>
+
+<h2>Relatórios e Análises</h2>
+<div id="relatorios" style="border: 1px solid #ccc; padding: 15px; margin-bottom: 20px;">
+    <h3>Estatísticas Gerais</h3>
+    <p>Total de Alunos: <span id="total-alunos">0</span></p>
+    <p>Média das Notas Finais: <span id="media-notas">N/A</span></p>
+    <p>Média das Idades: <span id="media-idades">N/A</span></p>
+    
+    <h3>Filtros e Listagens</h3>
+    <button id="btn-aprovados">Listar Aprovados</button>
+    <button id="btn-todos">Listar Todos (Resetar Filtro)</button>
+    <button id="btn-media">Recalcular Estatísticas</button>
+    
+    <div style="margin-top: 15px;">
+        <h4>Quantidade de Alunos por Curso:</h4>
+        <ul id="alunos-por-curso">
+            <li>JavaScript: N/A</li>
+            <li>Python: N/A</li>
+            <li>Java: N/A</li>
+        </ul>
+    </div>
+
+    <div style="margin-top: 15px;">
+        <h4>Nomes dos Alunos (Ordem Alfabética):</h4>
+        <p id="nomes-ordenados">N/A</p>
+    </div>
+</div>
+
+<hr>
 
     <h2>Alunos Cadastrados</h2>
     <table border="1" id="tabela-alunos">
